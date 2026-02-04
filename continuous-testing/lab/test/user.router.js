@@ -2,6 +2,7 @@ const app = require('../src/index')
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const db = require('../src/dbClient')
+const userController = require('../src/controllers/user')
 
 chai.use(chaiHttp)
 
@@ -59,52 +60,44 @@ describe('User REST API', () => {
     })
   })
 
-  // describe('GET /user', ()=> {
-  //   // TODO Create test for the get method
-  // })
   describe('GET /user', ()=> {
-
-    it('successfully get user', (done) => {
+    // get user
+    it('get an existing user', (done) => {
       const user = {
-        username: 'alice',
-        firstname: 'Alice',
-        lastname: 'Doe'
+        username: 'annchase',
+        firstname: 'Annabeth',
+        lastname: 'Chase'
       }
 
-      // créer un user d'abord
-      chai.request(app)
-        .post('/user')
-        .send(user)
-        .then(() => {
-          // puis le récupérer
-          chai.request(app)
-            .get('/user/hari')
-            .then((res) => {
-              chai.expect(res).to.have.status(200)
-              chai.expect(res.body.firstname).to.equal('hari')
-              chai.expect(res.body.lastname).to.equal('soa')
-              done()
+      // create a user
+      userController.create(user, () => {
+        // get user
+        chai.request(app)
+          .get('/user/' + user.username)
+          .then((res) => {
+            chai.expect(res).to.have.status(200)
+            chai.expect(res.body.status).to.equal('success')
+            chai.expect(res.body.msg).to.deep.equal({
+              firstname: 'Annabeth',
+              lastname: 'Chase'
             })
-        })
-        .catch((err) => {
-          throw err
-        })
+            chai.expect(res).to.be.json
+            done()
+          })
+          .catch((err) => { throw err })
+      })
     })
 
-    it('cannot get a user when it does not exist', (done) => {
+    it('cannot get user when it does not exist', (done) => {
       chai.request(app)
-        .get('/user/unknown')
+        .get('/user/invalid')
         .then((res) => {
           chai.expect(res).to.have.status(404)
           chai.expect(res.body.status).to.equal('error')
+          chai.expect(res).to.be.json
           done()
         })
-        .catch((err) => {
-          throw err
-        })
+        .catch((err) => { throw err })
     })
-
   })
-
-
 })

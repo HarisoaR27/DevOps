@@ -1,4 +1,7 @@
-const db = require('../dbClient')
+// controllers/user.js
+// handles the brain work of talking to the database
+
+const  db= require('../dbClient')
 
 module.exports = {
   create: (user, callback) => {
@@ -11,10 +14,20 @@ module.exports = {
       lastname: user.lastname,
     }
     // Save to DB
-    // TODO check if user already exists
-    db.hmset(user.username, userObj, (err, res) => {
-      if (err) return callback(err, null)
-      callback(null, res) // Return callback
+    // Check if user already exists
+    db.exists(user.username, (err, exists) => {
+      if (err) return callback(err, null) // there is an error
+      
+      if (exists === 1) {
+        // User exists
+        return callback(new Error("User already exists"), null)
+      }
+      
+      // User does not exist, we are creating a new one and saving to DB
+      db.hmset(user.username, userObj, (err, res) => {
+        if (err) return callback(err, null)
+        callback(null, res) // Return callback
+      })
     })
   },
   get: (username, callback) => {
