@@ -43,19 +43,36 @@ describe('User', () => {
     // })
   })
 
-  // TODO Create test for the get method
-  // describe('Get', ()=> {
-  //   
-  //   it('get a user by username', (done) => {
-  //     // 1. First, create a user to make this unit test independent from the others
-  //     // 2. Then, check if the result of the get method is correct
-  //     done()
-  //   })
-  //
-  //   it('cannot get a user when it does not exist', (done) => {
-  //     // Chech with any invalid user
-  //     done()
-  //   })
-  //
-  // })
+  describe('Get', ()=> {
+    
+    it('get a user by username', (done) => {
+      const user = {
+        username: 'har',
+        firstname: 'hari',
+        lastname: 'soa'
+      }
+
+      // 1. créer un user
+      userController.create(user, (err, result) => {
+        expect(err).to.be.equal(null)
+
+        // 2. le récupérer
+        userController.get('alice', (err, result) => {
+          expect(err).to.be.equal(null)
+          expect(result.firstname).to.be.equal('Alice')
+          expect(result.lastname).to.be.equal('Doe')
+          done()
+        })
+      })
+    })
+
+    it('cannot get a user when it does not exist', (done) => {
+      userController.get('unknown', (err, result) => {
+        expect(err).to.not.be.equal(null)
+        expect(result).to.be.equal(null)
+        done()
+      })
+    })
+
+  })
 })
