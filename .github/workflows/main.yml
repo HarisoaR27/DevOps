@@ -50,6 +50,6 @@ jobs:
           REDIS_PORT: 6379
       
       # 5. Deploy application on render
-      # - name: Trigger Render Deploy
-      #   if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      #   run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      - name: Trigger Render Deploy
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
