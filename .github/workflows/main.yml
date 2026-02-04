@@ -33,13 +33,16 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'continuous-testing/lab/package-lock.json'
 
       # 3. Install dependencies (creates node_modules)
       - name: Install dependencies
+        working-directory: continuous-testing/lab
         run: npm install
 
       # 4. Run the automated tests
       - name: Run tests
+        working-directory: continuous-testing/lab
         run: npm test
         env:
           # This tells your app to connect to the Redis service defined above
@@ -47,6 +50,6 @@ jobs:
           REDIS_PORT: 6379
       
       # 5. Deploy application on render
-      - name: Trigger Render Deploy
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      # - name: Trigger Render Deploy
+      #   if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      #   run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
