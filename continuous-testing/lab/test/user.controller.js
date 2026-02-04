@@ -8,7 +8,7 @@ describe('User', () => {
     // Clean DB before each test
     db.flushdb()
   })
-
+  
   describe('Create', () => {
 
     it('create a new user', (done) => {
@@ -36,43 +36,53 @@ describe('User', () => {
       })
     })
 
-    // it('avoid creating an existing user', (done)=> {
-    //   // TODO create this test
-    //   // Warning: the user already exists
-    //   done()
-    // })
-  })
-
-  describe('Get', ()=> {
-    
-    it('get a user by username', (done) => {
+    it('avoid creating an existing user', (done)=> {
       const user = {
-        username: 'har',
-        firstname: 'hari',
-        lastname: 'soa'
+        username: 'sergkudinov',
+        firstname: 'Sergei',
+        lastname: 'Kudinov'
       }
-
-      // 1. créer un user
-      userController.create(user, (err, result) => {
-        expect(err).to.be.equal(null)
-
-        // 2. le récupérer
-        userController.get('alice', (err, result) => {
-          expect(err).to.be.equal(null)
-          expect(result.firstname).to.be.equal('Alice')
-          expect(result.lastname).to.be.equal('Doe')
+      // Create a user
+      userController.create(user, () => {
+        // Create the same user again
+        userController.create(user, (err, result) => {
+          expect(err).to.not.be.equal(null)
+          expect(result).to.be.equal(null)
           done()
         })
       })
     })
+  })
 
-    it('cannot get a user when it does not exist', (done) => {
-      userController.get('unknown', (err, result) => {
+  describe('Get', ()=> {
+
+    it('get a user by username', (done) => {
+      const user = {
+        username: 'sergkudinov',
+        firstname: 'Sergei',
+        lastname: 'Kudinov'
+      }
+      // Create a user
+      userController.create(user, () => {
+        // Get an existing user
+        userController.get(user.username, (err, result) => {
+          expect(err).to.be.equal(null)
+          expect(result).to.be.deep.equal({
+            firstname: 'Sergei',
+            lastname: 'Kudinov'
+          })
+          done()
+        })
+      })
+    })
+  
+    it('can not get a user when it does not exist', (done) => {
+      userController.get('invalid', (err, result) => {
         expect(err).to.not.be.equal(null)
         expect(result).to.be.equal(null)
         done()
       })
     })
-
+  
   })
 })
