@@ -224,7 +224,7 @@ Nous avons donc adapté le health check pour :
 Statut : RÉUSSI
 
 - VM CentOS 7 créée avec succès.
-- ![Vargrant up](image/vargrant_ssh.png)
+- ![Vargrant up](image/vagrant_ssh.png)
 - Modification automatique du fichier `/etc/hosts`.
 - ![Modification du fichier](image/etc_host.png)
 - Création du fichier `/etc/vagrant_provisioned_at`.
