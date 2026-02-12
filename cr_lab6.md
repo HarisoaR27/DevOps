@@ -1,124 +1,294 @@
 # Compte-rendu lab 6 : Infrastructure as Code (IaC) avec Vagrant et Ansible
 
 **Date :** 12 février 2026  
-**Étudiants :** Harisoa, Jennifer
-**Sujet :** IaC (Infrastructure as Code) by provisioning virtual machines using **imperative** and **declarative** approaches
+**Étudiants :** Harisoa, Jennifer  
+**Sujet :** IaC (Infrastructure as Code) by provisioning virtual machines using **imperative** and **declarative** approaches  
+**Environnement utilisé :** VirtualBox, Vagrant, Ansible  
+**Distributions :**
+- Partie 1 : CentOS 7
+- Partie 2 : Rocky Linux 8 (GitLab)
 
 ---
 
-## **1. Objectif du lab**
-### **Objectifs**
+## 1. Objectif du lab
+
+### Objectifs
+
 Maîtriser les concepts fondamentaux de l'Infrastructure as Code (IaC) à travers trois parties :
-1. **Partie 1 - approche impérative** : Installation et utilisation de Vagrant avec Shell Provisioner pour créer et configurer une machine virtuelle CentOS 7 via des commandes shell.
-2. **Partie 2 - approche déclarative** : Installation d'Ansible, ensuite installation de GitLab  sur une VM Rocky Linux 8 en utilisant Vagrant avec Ansible.
-3. **Partie 3 - health checks** : Configuration des contrôles de santé (health checks) de GitLab via Ansible.
-4. **Bonus** : Détection des services dysfonctionnels avec affichage personnalisé.
 
-### **Ce que'on a appris**
-- Comprendre la différence entre approches impérative et déclarative en IaC
-- Utiliser Vagrant pour la gestion du cycle de vie des VMs
-- Utiliser Ansible comme outil de gestion de configuration
-- Implémenter des mécanismes de monitoring et health checking
+1. **Approche impérative** : Utilisation de Vagrant avec Shell Provisioner pour créer et configurer une VM CentOS 7.
+2. **Approche déclarative** : Installation d’Ansible et déploiement automatisé de GitLab sur Rocky Linux 8.
+3. **Health checks** : Vérification de l’état de GitLab via des endpoints API.
+4. **Bonus** : Détection automatique des services dysfonctionnels avec message personnalisé.
 
----
+### Ce que nous avons appris
 
-## **2. Applications**
-### **Cas d'usage concrets**
-#### *2.1 Environnements de développement standardisés*
-**Problème résolu :** Élimination du syndrome "ça marche sur ma machine"
-- Les développeurs utilisent Vagrant pour créer des environnements de développement identiques
-- Exemple : Une équipe de 50 développeurs peut instantanément provisionner un environnement de développement complet avec base de données, cache Redis, et serveur web en exécutant simplement `vagrant up`
-- **Entreprises utilisatrices :** HashiCorp, GitHub, Spotify
-
-#### *2.2 Déploiement d'infrastructure multi-environnements*
-**Application :** CI/CD et déploiement automatisé
-- Les playbooks Ansible permettent de déployer la même application sur dev, staging, et production avec des configurations différentes
-- GitLab lui-même utilise cette approche pour ses propres déploiements
-- **Cas réel :** Netflix utilise des outils similaires pour gérer des milliers de serveurs
+- Différence entre approche impérative et déclarative.
+- Gestion du cycle de vie des machines virtuelles avec Vagrant.
+- Automatisation de la configuration avec Ansible.
+- Mise en place de mécanismes de monitoring.
+- Résolution d’erreurs liées au provisioning et au déploiement.
 
 ---
 
-## **3. Étape dans le dycle DevOps**
-### *Positionnement : phase "build" et "deploy"
-Ce lab couvre principalement **deux phases du cycle DevOps** :
+## 2. Applications dans le monde réel
 
-#### *3.1 Phase BUILD (construction)*
-- **Création d'artifacts d'infrastructure** : Les Vagrantfiles et playbooks Ansible sont des artifacts versionnés qui définissent l'infrastructure
-- **Infrastructure as Code** : L'infrastructure est traitée comme du code, avec versioning, revue de code, et tests
-- **Automatisation** : Élimination des étapes manuelles de configuration (e.g. vagrant provision - configuration automatique)
-- **Reproductibilité** : Garantit que l'environnement peut être reconstruit de manière identique
+### 2.1 Environnements de développement standardisés
 
-**Outils du cycle BUILD présents dans le lab :**
-- Vagrant (orchestration de VMs)
-- Ansible (automatisation de configuration)
-- Git (versioning implicite des fichiers)
+Problème résolu : élimination du syndrome “ça marche sur ma machine”.
 
-#### *3.2 Phase DEPLOY (Déploiement)*
-- **Provisionnement automatisé** : Déploiement de GitLab sans intervention manuelle
-- **Configuration management** : Ansible configure les services (SSH, Postfix, firewall, GitLab)
-- **Répétable** : Les playbooks peuvent être rejoués sans effets secondaires
-- **Rollback capability** : Possibilité de revenir en arrière via `vagrant destroy` et `vagrant up`
+- Tous les développeurs peuvent exécuter `vagrant up` et obtenir un environnement identique.
+- Configuration versionnée dans le Vagrantfile.
+- Environnements reproductibles.
 
-#### *3.3 Phase MONITOR (Monitoring) - Partie 3*
-- **Health Checks** : Vérification de l'état de GitLab via API
-- **Service Discovery** : Détection des services dysfonctionnels
-- **Alerting** : Messages personnalisés en cas de problème (bonus task)
+Entreprises utilisant ce principe : HashiCorp, GitHub, Spotify.
 
 ---
 
-## **4. Problèmes rencontrés et résolutions**
-### Problème 1 : "A Vagrant environment or target machine is required to run this command"
-#### Message d'erreur
-```
+### 2.2 Déploiement multi-environnements
 
-```
+- Déploiement identique en dev, staging et production.
+- Infrastructure versionnée.
+- Idempotence des playbooks.
+- Intégration possible dans un pipeline CI/CD.
 
-#### Analyse du problème
-
-
-#### Processus de résolution
-
+Exemple réel : Netflix gère son infrastructure avec des outils similaires.
 
 ---
 
-## **5. Finalité du lab**
-### **5.1 Objectifs remplis**
+## 3. Étape dans le cycle DevOps
 
-#### *Partie 1 : Approche impérative*
-**Statut** : **RÉUSSI**
+### Phase BUILD
 
-**Preuves de réalisation** :
-- VM CentOS 7 créée et démarrée avec succès
-- Configuration `/etc/hosts` modifiée via shell provisioner
-- Fichier `/etc/vagrant_provisioned_at` créé avec date
-- Commandes Vagrant maîtrisées (`up`, `destroy`, `ssh`, `provision`)
+- Création des artefacts d’infrastructure (Vagrantfile, playbooks).
+- Infrastructure traitée comme du code.
+- Versionnement via Git.
+- Reproductibilité complète.
 
----
-
-#### Partie 2 : Installation GitLab (déclarative)
-**Statut** : **EN COURS**
-
-**Attendu** :
-- VM Rocky Linux 8 provisionnée
-- GitLab CE installé et accessible sur http://localhost:8080
-- Configuration automatisée via Ansible :
-  - Packages système (curl, SSH, Postfix)
-  - Firewall configuré (HTTP/HTTPS)
-  - GitLab téléchargé, installé et configuré
-  - Service démarré et opérationnel
-
-**Validation** :
-- Page de connexion GitLab accessible
-- Mot de passe root récupérable dans `/etc/gitlab/initial_root_password`
-- Playbook Ansible idempotent (rejouable sans erreurs)
+Outils utilisés :
+- Vagrant
+- Ansible
+- Git
 
 ---
 
-#### Partie 3 : Health Checks
-**Statut** : **EN COURS**
+### Phase DEPLOY
+
+- Installation automatique de GitLab.
+- Configuration automatique des dépendances.
+- Déploiement sans intervention manuelle.
+- Possibilité de rollback via `vagrant destroy`.
+
+---
+
+### Phase MONITOR
+
+- Vérification via `/health`, `/readiness`, `/liveness`.
+- Détection des services défaillants.
+- Affichage d’un message personnalisé en cas de problème.
+
+---
+
+## 4. Problèmes rencontrés et résolutions
+
+Durant la réalisation de ce lab, plusieurs difficultés techniques ont été rencontrées. Elles ne concernaient pas uniquement les commandes elles-mêmes, mais surtout l’adaptation de l’environnement à notre machine et la compréhension des erreurs retournées par les outils.
+
+---
+
+### 4.1 Adaptation à l’environnement macOS
+
+Le premier véritable obstacle a été lié à notre environnement de travail. Le TP proposait initialement certaines images (CentOS / Rocky Linux) compatibles avec VirtualBox, mais certaines configurations ont posé problème selon l’architecture et la compatibilité système.
+
+Nous avons dû :
+
+- Vérifier la compatibilité des boxes Vagrant avec notre environnement.
+- Tester différentes images.
+- Identifier celles qui fonctionnaient correctement avec VirtualBox.
+- Supprimer les images corrompues ou incompatibles.
+- Relancer le téléchargement de certaines boxes.
+
+Cette phase nous a appris qu’en DevOps, l’environnement local peut influencer fortement le bon fonctionnement d’une infrastructure automatisée.
+
+Nous avons contourné ces problèmes en :
+- Vérifiant les versions des boxes.
+- Téléchargeant manuellement certaines images.
+- Supprimant les environnements Vagrant mal initialisés (`vagrant destroy`).
+- Recréant proprement les machines virtuelles.
 
 
 ---
 
-#### Bonus : Détection des Services Dysfonctionnels
-**Statut** : ??
+### 4.2 Mauvais répertoire Vagrant
+
+À plusieurs reprises, l’erreur suivante est apparue :
+
+"A Vagrant environment or target machine is required"
+
+Après analyse, nous avons compris que la commande était exécutée dans un mauvais dossier.  
+Vagrant ne trouvait tout simplement pas le Vagrantfile.
+
+Nous avons donc pris l’habitude de vérifier notre position avec :
+
+    pwd
+
+et de naviguer vers le bon répertoire contenant le Vagrantfile avant d’exécuter les commandes.
+
+---
+
+### 4.3 Conflit de port 8080
+
+Lors du déploiement de GitLab, un conflit de port est apparu :
+
+"Port already in use"
+
+Cela signifiait qu’un autre service utilisait déjà le port 8080 sur notre machine.
+
+Pour comprendre le problème, nous avons utilisé :
+
+    lsof -i :8080
+
+Cette commande nous a permis d’identifier le processus responsable.
+
+Deux solutions ont été envisagées :
+- Arrêter le service utilisant le port.
+- Modifier le port dans le Vagrantfile.
+
+Nous avons choisi la solution la plus simple selon la situation.
+
+---
+
+### 4.4 Problème de synchronisation du playbook
+
+Lors de l’exécution d’Ansible, nous avons rencontré :
+
+"playbook not found"
+
+Cela venait d’un chemin incorrect ou d’un dossier non synchronisé entre l’hôte et la VM.
+
+Nous avons vérifié :
+- La présence du dossier `playbooks`
+- Le chemin `/vagrant/playbooks/run.yml`
+- La configuration du dossier synchronisé
+
+Après correction, le provisioning a pu continuer.
+
+---
+
+### 4.5 Erreurs durant le provisioning Ansible
+
+Certaines tâches Ansible échouaient avec :
+
+"FAILED! => ..."
+
+Alors, nous avons :
+
+- Identifié les dépendances manquantes.
+- Vérifié les services en cours d’exécution.
+- Relancé uniquement les tâches concernées.
+
+
+---
+
+### 4.6 Health check retournant 502
+
+Pour tester le bonus, nous avons volontairement arrêté Redis :
+
+    sudo gitlab-ctl stop redis
+
+Après cela, les endpoints de GitLab retournaient un statut 502 (Bad Gateway).
+
+Au lieu de considérer cela comme une erreur bloquante, nous avons compris que :
+
+- GitLab dépend de Redis.
+- L’arrêt d’un service impacte l’état global.
+- Le playbook doit détecter et signaler ce dysfonctionnement.
+
+Nous avons donc adapté le health check pour :
+- Ne pas bloquer complètement le playbook.
+- Analyser la réponse JSON.
+- Afficher un message personnalisé si un service est défaillant.
+
+
+
+---
+
+
+
+
+---
+
+## 5. Réalisation des parties
+
+### Partie 1 : Approche impérative
+
+Statut : RÉUSSI
+
+- VM CentOS 7 créée avec succès.
+- ![Vargrant up](image/vargrant_ssh.png)
+- Modification automatique du fichier `/etc/hosts`.
+- ![Modification du fichier](image/etc_host.png)
+- Création du fichier `/etc/vagrant_provisioned_at`.
+- ![Création d'un fichier](image/etc_vagrant_prov.png)
+- Maîtrise des commandes Vagrant.
+
+---
+
+### Partie 2 : Installation GitLab (déclarative)
+
+Statut : RÉUSSI
+
+- VM Rocky Linux 8 provisionnée.(Remplacée par Ubuntu pour notre cas sur MAC)
+- ![SSH gitlan](image/ssh_gitlab.png)
+- GitLab accessible via http://localhost.
+- ![gitlab localhost](image/gitlab_local.png)
+
+
+---
+
+### Partie 3 : Health Checks
+
+Statut : RÉUSSI
+
+- Endpoint `/health` testé.
+- ![health](image/health.png)
+- Endpoint `/readiness` testé.
+- ![readness](image/readness.png)
+
+
+
+---
+
+### Bonus : Détection des services dysfonctionnels
+
+Statut : RÉUSSI
+
+- Arrêt volontaire de Redis.
+- Détection automatique via playbook.
+- Message personnalisé affiché.
+![etat](image/etat.png)
+
+---
+
+## 6. Finalité du lab
+
+L’objectif du lab est atteint car :
+
+- L’infrastructure a été automatisée.
+- GitLab a été installé avec succès.
+- Les health checks fonctionnent.
+- L’environnement est reproductible.
+
+---
+
+## Conclusion
+
+Ce lab nous a permis de :
+
+- Comprendre l’Infrastructure as Code.
+- Différencier impératif et déclaratif.
+- Automatiser un déploiement réel.
+- Implémenter du monitoring.
+- Résoudre des erreurs techniques.
+
+
+  
