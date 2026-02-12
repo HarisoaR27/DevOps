@@ -1,38 +1,23 @@
 Vagrant.configure("2") do |config|
 
+  # Désactive le dossier partagé (important sur Mac)
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
   config.vm.define "gitlab_server" do |server|
 
-    # Box ARM compatible avec vagrant-qemu
-    server.vm.box = "generic/rocky8"
+    server.vm.box = "perk/ubuntu-2204-arm64"
 
-    # Configuration QEMU pour Mac ARM
     server.vm.provider "qemu" do |qe|
-      qe.memory = "4G"
+      qe.arch = "aarch64"
+      qe.machine = "virt,accel=hvf,highmem=off"
+      qe.cpu = "host"
+      qe.memory = "3G"
       qe.smp = "2"
       qe.ssh_auto_correct = true
       qe.net_device = "virtio-net-device"
-
-      # Partage de dossier via 9p (remplace SMB)
-      qe.extra_qemu_args = %w(
-        -virtfs local,path=.,mount_tag=shared,security_model=mapped
-      )
+      qe.qemu_dir = "/opt/homebrew/share/qemu"
     end
 
-    # Port pour accéder à GitLab depuis le navigateur
-    server.vm.network "forwarded_port",
-      guest: 80,
-      host: 8080,
-      auto_correct: true
-
-    # Désactive SMB
-    server.vm.synced_folder ".", "/vagrant", disabled: true
-
-  end
-
-  # Provisioner Ansible local
-  config.vm.provision "ansible_local" do |ansible|
-    ansible.playbook = "playbooks/run.yml"
-    ansible.tags = "install"
   end
 
 end
